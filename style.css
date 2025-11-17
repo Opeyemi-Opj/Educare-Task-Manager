@@ -222,6 +222,63 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Base Toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateX(40px);
+  animation: slideIn 0.35s forwards, fadeOut 0.4s ease 3s forwards;
+}
+
+/* Success Toast */
+.toast.success {
+  background: #27ae60;
+}
+
+/* Error Toast */
+.toast.error {
+  background: #ff3300;
+}
+
+/* Icon */
+.toast-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Message */
+.toast-message {
+  flex: 1;
+}
+
+/* Slide In Animation */
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Auto Fade Out */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
 
 /* Overlay */
 .modal-overlay {

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Educare Task Management Application | Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e1628;
+      --card: #1b2437;
+      --accent: #4f9dff;
+      --text: #e8ecf4;
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0e1628, #131c30);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slides {
+      width: 95vw;
+      height: 95vh;
+      max-width: 64rem;
+      position: relative;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 60px 80px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .slide h1 {
+      font-size: 4rem;
+      background: linear-gradient(90deg, #4f9dff, #a78bff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .slide h2 {
+      font-size: 2.8rem;
+      color: var(--accent);
+      margin: 30px 0 20px;
+    }
+
+    .slide p,
+    .slide li {
+      font-size: 1.4rem;
+      line-height: 1.8;
+      margin: 12px 0;
+    }
+
+    .slide ul {
+      margin-left: 40px;
+    }
+
+    .slide strong {
+      color: var(--accent);
+    }
+
+    .team {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin: 40px 0;
+    }
+
+    .member {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .member strong {
+      font-size: 1.3rem;
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    #live-app {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      background: #0e1628;
+    }
+
+    .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(79, 157, 255, 0.3);
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      font-size: 2rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      transition: 0.3s;
+    }
+
+    .nav:hover {
+      background: var(--accent);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Simple arrow icon styling */
+    .nav svg {
+      width: 28px;
+      height: 28px;
+      stroke: white;
+      stroke-width: 2.5;
+      fill: none;
+      transition: transform 0.25s ease;
+    }
+
+    /* Flip the previous arrow */
+    #prev svg {
+      transform: scaleX(-1);
+    }
+
+    #prev {
+      left: 30px;
+    }
+
+    #next {
+      right: 30px;
+    }
+
+    .counter {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .slide {
+        padding: 40px;
+      }
+
+      .slide h1 {
+        font-size: 3rem;
+      }
+
+      .slide h2 {
+        font-size: 2.2rem;
+      }
+
+      .slide p,
+      .slide li {
+        font-size: 1.2rem;
+      }
+
+      .nav {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+      }
+
+      #prev {
+        left: 15px;
+      }
+
+      #next {
+        right: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="slides">
+
+    <!-- Slide 1: Title -->
+    <section class="slide active">
+      <h1>Educare Task Management Application</h1>
+      <p style="font-size:2rem;color:#a78bff;">A Modern CRUD Application</p>
+      <br><br>
+      <p style="font-size:1.8rem;">Capstone Project • Educare Bootcamp 2025</p>
+      <div class="team">
+        <div class="member"><strong>Opeyemi</strong>Project Lead</div>
+        <div class="member"><strong>Eze</strong>UI/UX & CSS</div>
+        <div class="member"><strong>Christian</strong>Core Logic</div>
+      </div>
+    </section>
+
+    <!-- Slide 2: What We Built -->
+    <section class="slide">
+      <h2>What We Built</h2>
+      <ul>
+        <li>Full CRUD task management (Add, edit, complete or delete tasks)</li>
+        <li>Task Filtering (All, Active, Completed)</li>
+        <li>Persistent storage with localStorage</li>
+        <li>Beautiful dark UI + animations</li>
+        <li>Error handling and input validation</li>
+        <li>100% vanilla HTML/CSS/JS</li>
+        <li>Works offline</li>
+      </ul>
+    </section>
+
+    <!-- Slide 3: Simple ≠ Easy -->
+    <section class="slide">
+      <h2>Simple ≠ Easy</h2>
+      <p>We executed a classic project with <strong>production-level quality</strong>.</p>
+      <br>
+      <p>Mastered:</p>
+      <ul>
+        <li>DOM manipulation & event delegation</li>
+        <li>State management using localStorage</li>
+        <li>Responsive + accessible design</li>
+        <li>UX polish (toasts, modals, animations)</li>
+        <li>Code organization & modularity (GitHub repo and organized commits)</li>
+      </ul>
+    </section>
+
+    <!-- Slide 4: LIVE DEMO  -->
+    <section class="slide">
+      <h2 style="text-align:center;margin-bottom:20px;">Live Demo</h2>
+      <p style="text-align:center;font-size:1.5rem;margin-bottom:30px;">This is the <strong>real app</strong> — interact
+        with it!</p>
+
+      <!-- Button to open our app -->
+      <button onclick="window.open('index.html', '_blank')"
+        style="padding:15px 30px;font-size:1.2rem;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 15px rgba(79,157,255,0.4);transition:0.3s;">
+        Open Educare Task Manager
+      </button>
+
+      <p style="text-align:center;margin-top:20px;font-size:1.3rem;">
+        Add • Edit • Complete • Delete tasks above
+      </p>
+    </section>
+
+    <section class="slide">
+      <h2>Key Features</h2>
+      <ul>
+        <li>Inline editing</li>
+        <li>Live filter counters</li>
+        <li>Toast notifications</li>
+        <li>Delete confirmation modal</li>
+        <li>Keyboard shortcuts (Ctrl+K)</li>
+        <li>Smooth animations</li>
+        <li>Responsive design</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Code Architecture</h2>
+      <ul>
+        <li>Data layer</li>
+        <li>localStorage persistence</li>
+        <li>Filtering & sorting</li>
+        <li>Rendering engine</li>
+        <li>Event delegation</li>
+        <li>Modular functions</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>What We Learned</h2>
+      <ul>
+        <li>Real browser internals</li>
+        <li>UX details matter</li>
+        <li>Teamwork & reviews</li>
+        <li>Vanilla JS is powerful</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h2>Future Ideas</h2>
+      <ul>
+        <li>Due dates</li>
+        <li>Categories</li>
+        <li>Drag & drop</li>
+        <li>Cloud sync</li>
+        <li>Full PWA</li>
+      </ul>
+    </section>
+
+    <section class="slide">
+      <h1>Thank You!</h1>
+      <p style="font-size:2.5rem;margin:30px 0;">Questions?</p>
+      <p style="font-size:1.4rem;">
+        GitHub: <a href="#" style="color:var(--accent)">https://tinyurl.com/educaretaskrepo</a><br><br>
+        Live: <a href="index.html" style="color:var(--accent)">https://tinyurl.com/educaretaskapp</a>
+      </p>
+      <br><br>
+       <div class="team">
+        <div class="member"><strong>Opeyemi</strong>Project Lead</div>
+        <div class="member"><strong>Eze</strong>UI/UX & CSS</div>
+        <div class="member"><strong>Christian</strong>Core Logic</div>
+      </div>
+      <p style="font-size:1.2rem;color:#666;">© 2025 Educare Bootcamp. Built with ❤️ by Team Educare.</p>
+    </section>
+
+  </div>
+
+  <button class="nav" id="prev">
+    <svg viewBox="0 0 24 24">
+      <path d="M8 5l8 7-8 7" />
+    </svg>
+  </button>
+
+  <button class="nav" id="next">
+    <svg viewBox="0 0 24 24">
+      <path d="M8 5l8 7-8 7" />
+    </svg>
+  </button>
+  <div class="counter"><span id="current">1</span> / 9</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+
+    function goTo(action) {
+      // BLOCK when you're at the edges
+      if (action === 'next' && current === slides.length - 1) return;
+      if (action === 'prev' && current === 0) return;
+
+      slides[current].classList.remove('active');
+
+      if (action === 'next') current++;
+      if (action === 'prev') current--;
+
+      slides[current].classList.add('active');
+      document.getElementById('current').textContent = current + 1;
+    }
+
+    // BUTTONS
+    document.getElementById('next').onclick = () => goTo('next');
+    document.getElementById('prev').onclick = () => goTo('prev');
+
+    // KEYBOARD
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') goTo('next');
+      if (e.key === 'ArrowLeft') goTo('prev');
+    });
+  </script>
+</body>
+
+</html>

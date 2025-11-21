@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="body">
-
     
     <header class="header">
       <h1 class="main-title">Educare Task Management Application</h1>
@@ -15,25 +14,21 @@
     </header>
 
     <main class="main">
+
       <section id="task-input" class="task-input-section">
         <h2 class="section-title">Add a New Task</h2>
         <form id="task-form" class="task-form">
-          <input
-            type="text"
-            id="task-title"
-            class="task-input"
-            placeholder="Enter task title"
-            required
-          />
+          <input type="text" id="task-title" class="task-input" placeholder="Enter task title" required/>
           <button type="submit" class="btn add-btn">Add Task</button>
         </form>
       </section>
 
-      <section id="task-filters" class="filters">
+      <section id="task-filters" class="filters"> 
         <button id="filter-all" class="filter-btn active">
           All <span class="count">0</span>
         </button>
         <button id="filter-active" class="filter-btn">
+
           Active <span class="count">0</span>
         </button>
         <button id="filter-completed" class="filter-btn">
@@ -46,12 +41,14 @@
         <!-- Tasks will be added here using Javascript -->
         <ul id="task-list" class="list-task"></ul>
       </section>
+
     </main>
 
     <footer class="footer">
       <p class="footer-text">Educare Task Management Application © 2025 | Built for learning CRUD operations</p> 
       <a href="./presentation.html" class="btn">Learn More</a>   
-    </footer>    
+    </footer>
+    
       <script src="javascript.js"></script>  
      </body>
     </html>

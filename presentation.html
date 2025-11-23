@@ -51,13 +51,20 @@
       flex-direction: column;
       justify-content: center;
       opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform: scale(0.95) translateY(20px);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
     }
 
     .slide.active {
       opacity: 1;
-      transform: translateX(0);
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .slide.prev {
+      opacity: 0;
+      transform: scale(0.95) translateY(-20px);
     }
 
     .slide h1 {
@@ -139,10 +146,14 @@
 
     .nav:hover {
       background: var(--accent);
-      transform: translateY(-50%) scale(1.1);
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 10px 30px rgba(79, 157, 255, 0.4);
     }
 
-    /* Simple arrow icon styling */
+    .nav:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
     .nav svg {
       width: 28px;
       height: 28px;
@@ -152,7 +163,6 @@
       transition: transform 0.25s ease;
     }
 
-    /* Flip the previous arrow */
     #prev svg {
       transform: scaleX(-1);
     }
@@ -218,7 +228,7 @@
     <!-- Slide 1: Title -->
     <section class="slide active">
       <h1>Educare Task Management Application</h1>
-      <p style="font-size:2rem;color:#a78bff;">A Modern CRUD Application</p>
+      <p style="font-size:2rem;color:#a78bff;">A Modern CRUD Application with Advanced Features</p>
       <br><br>
       <p style="font-size:1.8rem;">Capstone Project • Educare Bootcamp 2025</p>
       <div class="team">
@@ -234,15 +244,34 @@
       <ul>
         <li>Full CRUD task management (Add, edit, complete or delete tasks)</li>
         <li>Task Filtering (All, Active, Completed)</li>
+        <li>Priority Levels (Low, Medium, High)</li>
+        <li>Due Dates & Task Descriptions</li>
+        <li>Smart Form Fields (appear on typing)</li>
         <li>Persistent storage with localStorage</li>
-        <li>Beautiful dark UI + animations</li>
+        <li>Beautiful dark UI + smooth animations</li>
         <li>Error handling and input validation</li>
         <li>100% vanilla HTML/CSS/JS</li>
         <li>Works offline</li>
       </ul>
     </section>
 
-    <!-- Slide 3: Simple ≠ Easy -->
+    <!-- Slide 3: Key Features -->
+    <section class="slide">
+      <h2>Key Features</h2>
+      <ul>
+        <li><strong>Priority System:</strong> 3 levels (High, Medium, Low) with color coding</li>
+        <li><strong>Due Dates:</strong> Optional date picker with formatted display</li>
+        <li><strong>Descriptions:</strong> Add details to tasks for context</li>
+        <li><strong>Smart Form:</strong> Optional fields appear when you start typing</li>
+        <li><strong>Live Counters:</strong> See task counts in filter tabs</li>
+        <li><strong>Toast Notifications:</strong> Instant feedback for actions</li>
+        <li><strong>Delete Confirmation:</strong> Modal to prevent accidental deletes</li>
+        <li><strong>Keyboard Shortcuts:</strong> Ctrl+K to focus input</li>
+        <li><strong>Responsive Design:</strong> Works on mobile & desktop</li>
+      </ul>
+    </section>
+
+    <!-- Slide 4: Simple ≠ Easy -->
     <section class="slide">
       <h2>Simple ≠ Easy</h2>
       <p>We executed a classic project with <strong>production-level quality</strong>.</p>
@@ -251,89 +280,102 @@
       <ul>
         <li>DOM manipulation & event delegation</li>
         <li>State management using localStorage</li>
+        <li>Dynamic form visibility & transitions</li>
         <li>Responsive + accessible design</li>
         <li>UX polish (toasts, modals, animations)</li>
-        <li>Code organization & modularity (GitHub repo and organized commits)</li>
+        <li>Code organization & modularity</li>
+        <li>Data validation & error handling</li>
       </ul>
     </section>
 
-    <!-- Slide 4: LIVE DEMO  -->
+    <!-- Slide 5: Live Demo -->
     <section class="slide">
       <h2 style="text-align:center;margin-bottom:20px;">Live Demo</h2>
-      <p style="text-align:center;font-size:1.5rem;margin-bottom:30px;">This is the <strong>real app</strong> — interact
-        with it!</p>
+      <p style="text-align:center;font-size:1.5rem;margin-bottom:30px;">This is the <strong>real app</strong> — interact with it!</p>
 
-      <!-- Button to open our app -->
       <button onclick="window.open('index.html', '_blank')"
-        style="padding:15px 30px;font-size:1.2rem;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 15px rgba(79,157,255,0.4);transition:0.3s;">
+        style="padding:15px 30px;font-size:1.2rem;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 15px rgba(79,157,255,0.4);transition:0.3s;margin-bottom:20px;">
         Open Educare Task Manager
       </button>
 
-      <p style="text-align:center;margin-top:20px;font-size:1.3rem;">
-        Add • Edit • Complete • Delete tasks above
+      <p style="text-align:center;font-size:1.3rem;">
+        Add • Edit • Complete • Delete tasks with Priority & Due Dates
       </p>
     </section>
 
+    <!-- Slide 6: How It Works -->
     <section class="slide">
-      <h2>Key Features</h2>
+      <h2>How It Works</h2>
       <ul>
-        <li>Inline editing</li>
-        <li>Live filter counters</li>
-        <li>Toast notifications</li>
-        <li>Delete confirmation modal</li>
-        <li>Keyboard shortcuts (Ctrl+K)</li>
-        <li>Smooth animations</li>
-        <li>Responsive design</li>
+        <li><strong>Add Task:</strong> Type title → optional fields appear automatically</li>
+        <li><strong>Priority:</strong> Select from Low (1), Medium (2), High (3)</li>
+        <li><strong>Due Date:</strong> Pick a date or leave empty</li>
+        <li><strong>Description:</strong> Add task details for more context</li>
+        <li><strong>Complete:</strong> Click ✓ to mark done (can undo with ↶)</li>
+        <li><strong>Delete:</strong> Click 🗑 with confirmation modal</li>
+        <li><strong>Filter:</strong> View All, Active, or Completed tasks</li>
+        <li><strong>Persist:</strong> All data saves automatically</li>
       </ul>
     </section>
 
+    <!-- Slide 7: Code Architecture -->
     <section class="slide">
       <h2>Code Architecture</h2>
       <ul>
-        <li>Data layer</li>
+        <li>Data layer (tasks array)</li>
         <li>localStorage persistence</li>
-        <li>Filtering & sorting</li>
-        <li>Rendering engine</li>
+        <li>Filtering & sorting engine</li>
+        <li>Rendering system</li>
         <li>Event delegation</li>
+        <li>Form validation & handling</li>
         <li>Modular functions</li>
+        <li>Clean state management</li>
       </ul>
     </section>
 
+    <!-- Slide 8: What We Learned -->
     <section class="slide">
       <h2>What We Learned</h2>
       <ul>
-        <li>Real browser internals</li>
-        <li>UX details matter</li>
-        <li>Teamwork & reviews</li>
-        <li>Vanilla JS is powerful</li>
+        <li>Real browser internals & DOM APIs</li>
+        <li>UX details matter (animations, feedback, transitions)</li>
+        <li>Teamwork & code reviews</li>
+        <li>Vanilla JS is powerful & flexible</li>
+        <li>localStorage for client-side persistence</li>
+        <li>Form state management</li>
+        <li>Error handling best practices</li>
       </ul>
     </section>
 
+    <!-- Slide 9: Future Ideas -->
     <section class="slide">
-      <h2>Future Ideas</h2>
+      <h2>Future Enhancements</h2>
       <ul>
-        <li>Due dates</li>
-        <li>Categories</li>
-        <li>Drag & drop</li>
-        <li>Cloud sync</li>
-        <li>Full PWA</li>
+        <li>Categories/Tags for organizing tasks</li>
+        <li>Search functionality</li>
+        <li>Recurring tasks</li>
+        <li>Drag & drop reordering</li>
+        <li>Cloud sync (Database)</li>
+        <li>Export to PDF/CSV</li>
+        <li>Dark/Light theme toggle</li>
       </ul>
     </section>
 
+    <!-- Slide 10: Thank You -->
     <section class="slide">
       <h1>Thank You!</h1>
       <p style="font-size:2.5rem;margin:30px 0;">Questions?</p>
       <p style="font-size:1.4rem;">
-        GitHub: <a href="#" style="color:var(--accent)">https://tinyurl.com/educaretaskrepo</a><br><br>
-        Live: <a href="index.html" style="color:var(--accent)">https://tinyurl.com/educaretaskapp</a>
+        GitHub: <a href="#" style="color:var(--accent);text-decoration:none;">https://tinyurl.com/educaretaskrepo</a><br><br>
+        Live: <a href="index.html" style="color:var(--accent);text-decoration:none;">https://tinyurl.com/educaretaskapp</a>
       </p>
       <br><br>
-       <div class="team">
+      <div class="team">
         <div class="member"><strong>Opeyemi</strong>Project Lead</div>
         <div class="member"><strong>Eze</strong>UI/UX & CSS</div>
         <div class="member"><strong>Christian</strong>Core Logic</div>
       </div>
-      <p style="font-size:1.2rem;color:#666;">© 2025 Educare Bootcamp. Built with ❤️ by Team Educare.</p>
+      <p style="font-size:1.2rem;color:#666;margin-top:20px;">© 2025 Educare Bootcamp. Built with ❤️ by Team Educare.</p>
     </section>
 
   </div>
@@ -349,7 +391,8 @@
       <path d="M8 5l8 7-8 7" />
     </svg>
   </button>
-  <div class="counter"><span id="current">1</span> / 9</div>
+
+  <div class="counter"><span id="current">1</span> / 10</div>
 
   <script>
     const slides = document.querySelectorAll('.slide');
@@ -361,10 +404,12 @@
       if (action === 'prev' && current === 0) return;
 
       slides[current].classList.remove('active');
+      slides[current].classList.add(action === 'next' ? 'prev' : 'next');
 
       if (action === 'next') current++;
       if (action === 'prev') current--;
 
+      slides[current].classList.remove('prev', 'next');
       slides[current].classList.add('active');
       document.getElementById('current').textContent = current + 1;
     }

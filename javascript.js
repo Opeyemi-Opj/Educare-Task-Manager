@@ -1,6 +1,20 @@
 let tasks = [];
 let currentFilter = 'all';
 
+const titleInput = document.getElementById('task-title');
+const optionalFields = document.getElementById('optional-fields');
+const taskForm = document.getElementById('task-form');
+const taskList = document.getElementById('task-list');
+
+// Toggle optional fields visibility
+titleInput.addEventListener('input', () => {
+  if (titleInput.value.trim()) {
+    optionalFields.classList.add('visible');
+  } else {
+    optionalFields.classList.remove('visible');
+  }
+});
+
 function loadTasks() {
   const stored = localStorage.getItem('educareTasks');
   return stored ? JSON.parse(stored) : [];
@@ -10,13 +24,16 @@ function saveTasks() {
   localStorage.setItem('educareTasks', JSON.stringify(tasks));
 }
 
-function addTask(title) {
+function addTask(title, description, priority, dueDate) {
   const trimmed = title.trim();
   if (!trimmed) return false;
 
   const task = {
     id: Date.now(),
     title: trimmed,
+    description: description.trim(),
+    priority: parseInt(priority) || 1,
+    dueDate: dueDate || null,
     completed: false,
     createdAt: new Date().toISOString()
   };
@@ -71,6 +88,23 @@ function getFilteredTasks() {
     if (a.completed === b.completed) return 0;
     return a.completed ? 1 : -1;
   });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function getPriorityLabel(priority) {
+  const labels = { 1: 'Low', 2: 'Medium', 3: 'High' };
+  return labels[priority] || 'Low';
 }
 
 function showToast(message, type = 'success') {
@@ -133,6 +167,62 @@ function showConfirmDialog(message, onConfirm) {
   });
 }
 
+function showEditDialog(task, onUpdate) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">Edit Task</div>
+      <div class="modal-body">
+        <input type="text" id="edit-title" value="${escapeHtml(task.title)}" placeholder="Task title" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.95rem;outline:none;" />
+        <textarea id="edit-description" placeholder="Task description" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.9rem;resize:none;height:70px;outline:none;">${escapeHtml(task.description)}</textarea>
+        <select id="edit-priority" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;outline:none;">
+          <option value="1" ${task.priority === 1 ? 'selected' : ''}>Low</option>
+          <option value="2" ${task.priority === 2 ? 'selected' : ''}>Medium</option>
+          <option value="3" ${task.priority === 3 ? 'selected' : ''}>High</option>
+        </select>
+        <input type="date" id="edit-duedate" value="${task.dueDate ? task.dueDate.split('T')[0] : ''}" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;font-family:Poppins;outline:none;" />
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel">Cancel</button>
+        <button class="modal-btn modal-btn-confirm">Save</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const cancelBtn = overlay.querySelector('.modal-btn-cancel');
+  const saveBtn = overlay.querySelector('.modal-btn-confirm');
+  saveBtn.style.background = '#4f9dff';
+
+  function closeModal() {
+    overlay.remove();
+  }
+
+  cancelBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  saveBtn.addEventListener('click', () => {
+    const title = document.getElementById('edit-title').value.trim();
+    if (!title) return showToast('Title cannot be empty', 'error');
+
+    updateTask(task.id, {
+      title: title,
+      description: document.getElementById('edit-description').value.trim(),
+      priority: parseInt(document.getElementById('edit-priority').value),
+      dueDate: document.getElementById('edit-duedate').value || null
+    });
+
+    showToast('Task updated!', 'success');
+    onUpdate();
+    closeModal();
+  });
+}
+
 function updateStatistics() {
   const total = tasks.length;
   const active = tasks.filter(t => !t.completed).length;
@@ -144,7 +234,6 @@ function updateStatistics() {
 }
 
 function renderTasks() {
-  const taskList = document.getElementById('task-list');
   const filtered = getFilteredTasks();
 
   if (filtered.length === 0) {
@@ -169,24 +258,27 @@ function renderTasks() {
     <li class="task-item ${task.completed ? 'task-completed' : ''}"
         data-id="${task.id}"
         style="animation-delay: ${index * 0.05}s">
-      <span class="task-title">${escapeHtml(task.title)}</span>
-      <div class="task-actions">
-        <button class="edit-btn" title="Edit">&#9998;</button>
-        <button class="toggle-btn" title="${task.completed ? 'Undo' : 'Mark Complete'}">
-          ${task.completed ? '&#8635;' : '&#10003;'}
-        </button>
-        <button class="delete-btn" title="Delete">&#128465;</button>
+      <div class="task-header">
+        <div class="task-title-section">
+          <div class="task-title">${escapeHtml(task.title)}</div>
+          <div class="task-meta">
+            <span class="task-priority priority-${task.priority}">Priority: ${getPriorityLabel(task.priority)}</span>
+            ${task.dueDate ? `<span>Due: ${formatDate(task.dueDate)}</span>` : ''}
+          </div>
+          ${task.description ? `<div class="task-description">${escapeHtml(task.description)}</div>` : ''}
+        </div>
+        <div class="task-actions">
+          <button class="edit-btn" title="Edit">✏️</button>
+          <button class="toggle-btn" title="${task.completed ? 'Undo' : 'Mark Complete'}">
+            ${task.completed ? '↶' : '✓'}
+          </button>
+          <button class="delete-btn" title="Delete">🗑</button>
+        </div>
       </div>
     </li>
   `).join('');
 
   updateStatistics();
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
 }
 
 function setFilter(filter) {
@@ -200,77 +292,41 @@ function setFilter(filter) {
   renderTasks();
 }
 
-function enableEditMode(taskItem) {
-  const taskId = parseInt(taskItem.dataset.id);
-  const task = tasks.find(t => t.id === taskId);
-  if (!task) return;
-
-  const titleSpan = taskItem.querySelector('.task-title');
-  const currentTitle = task.title;
-
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.value = currentTitle;
-  input.className = 'edit-input';
-  input.style.cssText = `
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid var(--accent);
-    border-radius: 8px;
-    background: #0e1628;
-    color: var(--text);
-    font-size: 0.95rem;
-    outline: none;
-    animation: fadeIn 0.3s ease-out;
-  `;
-
-  titleSpan.replaceWith(input);
-  input.focus();
-  input.select();
-
-  function saveEdit() {
-    const newTitle = input.value.trim();
-    if (newTitle && newTitle !== currentTitle) {
-      updateTask(taskId, { title: newTitle });
-      showToast('Task updated successfully!', 'success');
-    }
-    renderTasks();
-  }
-
-  input.addEventListener('blur', saveEdit);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      saveEdit();
-    } else if (e.key === 'Escape') {
-      renderTasks();
-    }
-  });
-}
-
 function handleTaskAction(e) {
   const button = e.target.closest('button');
-  if (!button) return;
-
-  const taskItem = button.closest('.task-item');
+  const taskItem = e.target.closest('.task-item');
+  
   if (!taskItem) return;
 
   const taskId = parseInt(taskItem.dataset.id);
 
+  // If clicking on title section (not a button), toggle description
+  if (!button && e.target.closest('.task-title-section')) {
+    const task = tasks.find(t => t.id === taskId);
+    if (task && task.description) {
+      taskItem.classList.toggle('expanded');
+    }
+    return;
+  }
+
+  if (!button) return;
+
   if (button.classList.contains('edit-btn')) {
-    enableEditMode(taskItem);
-  } else if (button.classList.contains('toggle-btn')) {
-    taskItem.classList.add('task-completing');
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
 
-    setTimeout(() => {
-      const wasCompleted = tasks.find(t => t.id === taskId)?.completed;
-      toggleTask(taskId);
-
-      if (!wasCompleted) {
-        showToast('Task completed!', 'success');
-      }
-
+    showEditDialog(task, () => {
       renderTasks();
-    }, 300);
+    });
+  } else if (button.classList.contains('toggle-btn')) {
+    const wasCompleted = tasks.find(t => t.id === taskId)?.completed;
+    toggleTask(taskId);
+
+    if (!wasCompleted) {
+      showToast('Task completed!', 'success');
+    }
+
+    renderTasks();
   } else if (button.classList.contains('delete-btn')) {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
@@ -278,13 +334,9 @@ function handleTaskAction(e) {
     showConfirmDialog(
       `Are you sure you want to delete "${task.title}"?`,
       () => {
-        taskItem.classList.add('task-removing');
-
-        setTimeout(() => {
-          deleteTask(taskId);
-          showToast('Task deleted', 'error');
-          renderTasks();
-        }, 400);
+        deleteTask(taskId);
+        showToast('Task deleted', 'error');
+        renderTasks();
       }
     );
   }
@@ -293,18 +345,24 @@ function handleTaskAction(e) {
 function handleFormSubmit(e) {
   e.preventDefault();
 
-  const input = document.getElementById('task-title');
-  const title = input.value;
+  const title = document.getElementById('task-title').value;
+  const description = document.getElementById('task-description').value;
+  const priority = document.getElementById('task-priority').value;
+  const dueDate = document.getElementById('task-duedate').value;
 
-  if (addTask(title)) {
-    input.value = '';
+  if (addTask(title, description, priority, dueDate)) {
+    document.getElementById('task-title').value = '';
+    document.getElementById('task-description').value = '';
+    document.getElementById('task-priority').value = '1';
+    document.getElementById('task-duedate').value = '';
+    optionalFields.classList.remove('visible');
     showToast('Task added successfully!', 'success');
     renderTasks();
-    input.focus();
+    document.getElementById('task-title').focus();
   } else {
-    input.classList.add('error');
+    document.getElementById('task-title').classList.add('error');
     setTimeout(() => {
-      input.classList.remove('error');
+      document.getElementById('task-title').classList.remove('error');
     }, 500);
   }
 }
@@ -312,8 +370,8 @@ function handleFormSubmit(e) {
 function init() {
   tasks = loadTasks();
 
-  document.getElementById('task-form').addEventListener('submit', handleFormSubmit);
-  document.getElementById('task-list').addEventListener('click', handleTaskAction);
+  taskForm.addEventListener('submit', handleFormSubmit);
+  taskList.addEventListener('click', handleTaskAction);
 
   document.getElementById('filter-all').addEventListener('click', () => setFilter('all'));
   document.getElementById('filter-active').addEventListener('click', () => setFilter('active'));

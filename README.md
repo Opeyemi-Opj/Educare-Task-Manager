@@ -1,4 +1,4 @@
-# 🧩 Educare Task Manager (Group 2)
+# 🧩 Educare Task Management Application (Group 2)
 
 ## 📘 Project Overview
 Develop a comprehensive task management application that allows users to **create**, **read**, **update**, and **delete** tasks.  

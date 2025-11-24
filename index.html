@@ -1,57 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Educare Task Manager</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body class="body">
-    <header class="header">
-      <h1 class="main-title">Educare Task Manager</h1>
-      <p class="subtitle">Manage your daily tasks easily</p>
-    </header>
 
-    <main class="main">
-      <section id="task-input" class="task-input-section">
-        <h2 class="section-title">Add a New Task</h2>
-        <form id="task-form" class="task-form">
-          <input
-            type="text"
-            id="task-title"
-            class="task-input"
-            placeholder="Enter task title"
-            required
-          />
-          <button type="submit" class="btn add-btn">Add Task</button>
-        </form>
-      </section>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTask</title>
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-      <section id="task-filters" class="filters">
-        <button id="filter-all" class="filter-btn active">
-          All <span class="count">0</span>
-        </button>
-        <button id="filter-active" class="filter-btn">
-          Active <span class="count">0</span>
-        </button>
-        <button id="filter-completed" class="filter-btn">
-          Completed <span class="count">0</span>
-        </button>
-      </section>
+<body>
 
-      <section id="task-list-section" class="list-section">
-        <h2>Your Tasks</h2>
-        <!-- Tasks will be added here using Javascript -->
-        <ul id="task-list" class="list-task"></ul>
-      </section>
-    </main>
+  <header>
+    <nav>
+      <img src="./assets/logoo.png" alt="EduTask Logo" class="logo" />
+      <!-- <h1>EduTask</h1> -->
+    </nav>
+    <p>Manage your daily tasks easily</p>
+  </header>
 
-    <footer class="footer">
-      <p class="footer-text">
-        Educare Task Manager © 2025 | Built for learning CRUD operations
-      </p>
-    </footer>
+  <main>
+    <section id="task-input">
+      <form id="task-form">
+        <input
+          type="text"
+          id="task-title"
+          placeholder="Enter task title"
+          required
+        />
 
-    <script src="javascript.js"></script>
-  </body>
+        <div class="optional-fields" id="optional-fields">
+          <textarea
+            id="task-description"
+            placeholder="Task description (optional)"
+          ></textarea>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority">
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="task-duedate">Due Date</label>
+              <input type="date" id="task-duedate" />
+            </div>
+          </div>
+        <button type="submit">Add Task</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="task-filters" class="filters">
+      <button id="filter-all" class="filter-btn active">
+        All <span class="count">0</span>
+      </button>
+      <button id="filter-active" class="filter-btn">
+        Active <span class="count">0</span>
+      </button>
+      <button id="filter-completed" class="filter-btn">
+        Completed <span class="count">0</span>
+      </button>
+    </section>
+
+    <section id="task-list-section">
+      <h2>Your Tasks</h2>
+      <ul id="task-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Educare Task Management Application © 2025 | Built for learning CRUD operations</p>
+    <a href="./presentation.html" class="btn">View Presentation</a>
+  </footer>
+
+  <script src="javascript.js"></script>
+
+</body>
+
 </html>

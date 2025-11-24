@@ -44,3 +44,4 @@ This project focuses on **CRUD operations**, **localStorage**, and **dynamic UI 
 
 ##  Team Goal
 Deliver a clean, fully functional, and responsive **To-Do List App** that demonstrates mastery of front-end development concepts and effective collaboration using Git and GitHub.
+ You can explore the full app here: https://educaretaskmanager.onrender.com/index.htm

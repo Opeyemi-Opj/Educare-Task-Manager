@@ -1,19 +1,18 @@
 let tasks = [];
-let currentFilter = 'all';
+let currentFilter = 'active';
 
-const titleInput = document.getElementById('task-title');
-const optionalFields = document.getElementById('optional-fields');
-const taskForm = document.getElementById('task-form');
 const taskList = document.getElementById('task-list');
 
-// Toggle optional fields visibility
-titleInput.addEventListener('input', () => {
-  if (titleInput.value.trim()) {
-    optionalFields.classList.add('visible');
-  } else {
-    optionalFields.classList.remove('visible');
-  }
-});
+// Get current datetime in YYYY-MM-DDTHH:MM format for datetime validation
+function getCurrentDateTime() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
 
 function loadTasks() {
   const stored = localStorage.getItem('educareTasks');
@@ -83,10 +82,28 @@ function getFilteredTasks() {
     filtered = [...tasks];
   }
 
-  // Sort to show active tasks on top
+  // Multi-criteria sorting:
   return filtered.sort((a, b) => {
-    if (a.completed === b.completed) return 0;
-    return a.completed ? 1 : -1;
+    // First: completed status (active tasks first)
+    if (a.completed !== b.completed) {
+      return a.completed ? 1 : -1;
+    }
+
+    // Second: priority (high to low)
+    if (a.priority !== b.priority) {
+      return b.priority - a.priority;
+    }
+
+    // Third: due date (soonest first)
+    // Tasks with no due date go after tasks with due dates
+    if (a.dueDate && b.dueDate) {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    }
+    if (a.dueDate && !b.dueDate) return -1;
+    if (!a.dueDate && b.dueDate) return 1;
+
+    // Fourth: creation date (newest first)
+    return new Date(b.createdAt) - new Date(a.createdAt);
   });
 }
 
@@ -99,7 +116,13 @@ function escapeHtml(text) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
 }
 
 function getPriorityLabel(priority) {
@@ -167,26 +190,34 @@ function showConfirmDialog(message, onConfirm) {
   });
 }
 
-function showEditDialog(task, onUpdate) {
+function showTaskDialog(task = null, onSave) {
+  const isEdit = task !== null;
   const overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
 
+  const minDateTime = getCurrentDateTime();
+  const title = isEdit ? escapeHtml(task.title) : '';
+  const description = isEdit ? escapeHtml(task.description) : '';
+  const priority = isEdit ? task.priority : 1;
+  // Format existing datetime for datetime-local input
+  const dueDate = isEdit && task.dueDate ? task.dueDate.substring(0, 16) : '';
+
   overlay.innerHTML = `
     <div class="modal">
-      <div class="modal-header">Edit Task</div>
+      <div class="modal-header">${isEdit ? 'Edit Task' : 'Add New Task'}</div>
       <div class="modal-body">
-        <input type="text" id="edit-title" value="${escapeHtml(task.title)}" placeholder="Task title" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.95rem;outline:none;" />
-        <textarea id="edit-description" placeholder="Task description" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.9rem;resize:none;height:70px;outline:none;">${escapeHtml(task.description)}</textarea>
-        <select id="edit-priority" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;outline:none;">
-          <option value="1" ${task.priority === 1 ? 'selected' : ''}>Low</option>
-          <option value="2" ${task.priority === 2 ? 'selected' : ''}>Medium</option>
-          <option value="3" ${task.priority === 3 ? 'selected' : ''}>High</option>
+        <input type="text" id="task-title" value="${title}" placeholder="Task title" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.95rem;outline:none;" />
+        <textarea id="task-description" placeholder="Task description (optional)" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;font-size:0.9rem;resize:none;height:70px;outline:none;">${description}</textarea>
+        <select id="task-priority" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;margin-bottom:12px;font-family:Poppins;outline:none;">
+          <option value="1" ${priority === 1 ? 'selected' : ''}>Low Priority</option>
+          <option value="2" ${priority === 2 ? 'selected' : ''}>Medium Priority</option>
+          <option value="3" ${priority === 3 ? 'selected' : ''}>High Priority</option>
         </select>
-        <input type="date" id="edit-duedate" value="${task.dueDate ? task.dueDate.split('T')[0] : ''}" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;font-family:Poppins;outline:none;" />
+        <input type="datetime-local" id="task-duedate" value="${dueDate}" min="${minDateTime}" style="width:100%;padding:10px;border:2px solid rgba(79,157,255,0.3);border-radius:8px;background:#101829;color:#e8ecf4;font-family:Poppins;outline:none;" />
       </div>
       <div class="modal-actions">
         <button class="modal-btn modal-btn-cancel">Cancel</button>
-        <button class="modal-btn modal-btn-confirm">Save</button>
+        <button class="modal-btn modal-btn-confirm">${isEdit ? 'Save' : 'Add Task'}</button>
       </div>
     </div>
   `;
@@ -195,7 +226,13 @@ function showEditDialog(task, onUpdate) {
 
   const cancelBtn = overlay.querySelector('.modal-btn-cancel');
   const saveBtn = overlay.querySelector('.modal-btn-confirm');
+  const titleInput = overlay.querySelector('#task-title');
+  const dateInput = overlay.querySelector('#task-duedate');
+
   saveBtn.style.background = '#4f9dff';
+
+  // Focus on title input
+  setTimeout(() => titleInput.focus(), 100);
 
   function closeModal() {
     overlay.remove();
@@ -207,19 +244,38 @@ function showEditDialog(task, onUpdate) {
   });
 
   saveBtn.addEventListener('click', () => {
-    const title = document.getElementById('edit-title').value.trim();
-    if (!title) return showToast('Title cannot be empty', 'error');
+    const title = titleInput.value.trim();
+    if (!title) {
+      showToast('Title cannot be empty', 'error');
+      titleInput.style.borderColor = 'var(--error)';
+      return;
+    }
 
-    updateTask(task.id, {
-      title: title,
-      description: document.getElementById('edit-description').value.trim(),
-      priority: parseInt(document.getElementById('edit-priority').value),
-      dueDate: document.getElementById('edit-duedate').value || null
-    });
+    const description = document.getElementById('task-description').value.trim();
+    const priority = parseInt(document.getElementById('task-priority').value);
+    const dueDate = dateInput.value || null;
 
-    showToast('Task updated!', 'success');
-    onUpdate();
+    if (isEdit) {
+      updateTask(task.id, { title, description, priority, dueDate });
+      showToast('Task updated!', 'success');
+    } else {
+      addTask(title, description, priority, dueDate);
+      showToast('Task added successfully!', 'success');
+    }
+
+    onSave();
     closeModal();
+  });
+
+  // Allow Enter to submit (only when not in textarea)
+  overlay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.id !== 'task-description') {
+      e.preventDefault();
+      saveBtn.click();
+    }
+    if (e.key === 'Escape') {
+      closeModal();
+    }
   });
 }
 
@@ -241,15 +297,28 @@ function renderTasks() {
                       currentFilter === 'active' ? '📝' : '📋';
     const emptyText = currentFilter === 'completed' ? 'No completed tasks yet' :
                       currentFilter === 'active' ? 'No active tasks' : 'No tasks yet';
-    const emptyHint = currentFilter === 'all' ? 'Add your first task above!' : '';
+    const emptyHint = currentFilter === 'all' ? 'Click below to add your first task!' :
+                      currentFilter === 'active' ? 'Click below to create a task!' : '';
 
     taskList.innerHTML = `
       <div class="empty-state">
         <div class="empty-state-icon">${emptyIcon}</div>
         <div class="empty-state-text">${emptyText}</div>
         <div class="empty-state-hint">${emptyHint}</div>
+        ${currentFilter !== 'completed' ? '<button class="empty-state-btn" id="empty-add-task">+ Add New Task</button>' : ''}
       </div>
     `;
+
+    // Add click handler for empty state button
+    const emptyBtn = document.getElementById('empty-add-task');
+    if (emptyBtn) {
+      emptyBtn.addEventListener('click', () => {
+        showTaskDialog(null, () => {
+          renderTasks();
+        });
+      });
+    }
+
     updateStatistics();
     return;
   }
@@ -315,7 +384,7 @@ function handleTaskAction(e) {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
 
-    showEditDialog(task, () => {
+    showTaskDialog(task, () => {
       renderTasks();
     });
   } else if (button.classList.contains('toggle-btn')) {
@@ -342,55 +411,40 @@ function handleTaskAction(e) {
   }
 }
 
-function handleFormSubmit(e) {
-  e.preventDefault();
-
-  const title = document.getElementById('task-title').value;
-  const description = document.getElementById('task-description').value;
-  const priority = document.getElementById('task-priority').value;
-  const dueDate = document.getElementById('task-duedate').value;
-
-  if (addTask(title, description, priority, dueDate)) {
-    document.getElementById('task-title').value = '';
-    document.getElementById('task-description').value = '';
-    document.getElementById('task-priority').value = '1';
-    document.getElementById('task-duedate').value = '';
-    optionalFields.classList.remove('visible');
-    showToast('Task added successfully!', 'success');
-    renderTasks();
-    document.getElementById('task-title').focus();
-  } else {
-    document.getElementById('task-title').classList.add('error');
-    setTimeout(() => {
-      document.getElementById('task-title').classList.remove('error');
-    }, 500);
-  }
-}
-
 function init() {
   tasks = loadTasks();
 
-  taskForm.addEventListener('submit', handleFormSubmit);
+  // FAB button click handler (desktop - inline)
+  const fabButton = document.getElementById('fab-add-task');
+  fabButton.addEventListener('click', () => {
+    showTaskDialog(null, () => {
+      renderTasks();
+    });
+  });
+
+  // FAB button click handler (mobile - floating)
+  const fabMobileButton = document.getElementById('fab-add-task-mobile');
+  fabMobileButton.addEventListener('click', () => {
+    showTaskDialog(null, () => {
+      renderTasks();
+    });
+  });
+
   taskList.addEventListener('click', handleTaskAction);
 
   document.getElementById('filter-all').addEventListener('click', () => setFilter('all'));
   document.getElementById('filter-active').addEventListener('click', () => setFilter('active'));
   document.getElementById('filter-completed').addEventListener('click', () => setFilter('completed'));
 
+  // Keyboard shortcut to open add task modal
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'k') {
       e.preventDefault();
-      document.getElementById('task-title').focus();
+      fabButton.click();
     }
   });
 
-  setFilter('all');
-
-  if (tasks.length === 0) {
-    setTimeout(() => {
-      document.getElementById('task-title').focus();
-    }, 800);
-  }
+  setFilter('active');
 }
 
 document.addEventListener('DOMContentLoaded', init);

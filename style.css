@@ -178,13 +178,19 @@ main {
 /* Filters */
 #task-filters {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
   margin: 20px 0;
+  gap: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-#task-filters button {
+.filter-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--muted);
@@ -196,7 +202,7 @@ main {
   font-size: 0.9rem;
 }
 
-#task-filters button .count {
+.filter-btn .count {
   display: inline-block;
   background: rgba(255, 255, 255, 0.1);
   padding: 2px 8px;
@@ -207,31 +213,59 @@ main {
   transition: var(--transition);
 }
 
-#task-filters button:hover {
+.filter-btn:hover {
   background: rgba(79, 157, 255, 0.1);
   border-color: var(--accent);
 }
 
-#task-filters button.active {
+.filter-btn.active {
   background: var(--accent);
   color: #fff;
   border-color: var(--accent);
 }
 
-#task-filters button.active .count {
+.filter-btn.active .count {
   background: rgba(255, 255, 255, 0.2);
 }
 
 /* Task List */
+#task-list-section {
+  min-height: 300px;
+  max-height: calc(100vh - 400px);
+  display: flex;
+  flex-direction: column;
+}
+
 #task-list-section h2 {
   font-size: 1.2rem;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 #task-list {
   list-style: none;
-  max-height: 400px;
   overflow-y: auto;
+  flex: 1;
+  padding-right: 4px;
+}
+
+/* Custom scrollbar */
+#task-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#task-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+#task-list::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+#task-list::-webkit-scrollbar-thumb:hover {
+  background: #6bb0ff;
 }
 
 .task-item {
@@ -390,6 +424,25 @@ main {
 .empty-state-hint {
   font-size: 0.9rem;
   opacity: 0.7;
+  margin-bottom: 20px;
+}
+
+.empty-state-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 16px;
+}
+
+.empty-state-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 157, 255, 0.4);
 }
 
 /* Toast Notifications */
@@ -502,6 +555,48 @@ main {
   background: #dc2626;
 }
 
+/* Add Task Button (in filter row) */
+.fab {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(79, 157, 255, 0.4);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(79, 157, 255, 0.6);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.fab-icon {
+  line-height: 1;
+  font-weight: 300;
+}
+
+.fab::after {
+  content: none;
+}
+
+/* Mobile Floating Action Button */
+.fab-mobile {
+  display: none; /* Hidden on desktop */
+}
+
 /* Footer */
 footer {
   position: fixed;
@@ -567,5 +662,61 @@ footer .btn:hover {
 
   .task-meta {
     font-size: 0.75rem;
+  }
+
+  #task-filters {
+    justify-content: center;
+  }
+
+  .filter-buttons {
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .filter-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    border-radius: 16px;
+  }
+
+  .filter-btn .count {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    margin-left: 4px;
+  }
+
+  /* Hide inline button on mobile */
+  #task-filters .fab {
+    display: none;
+  }
+
+  /* Show floating button on mobile */
+  .fab-mobile {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(79, 157, 255, 0.4);
+    transition: var(--transition);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .fab-mobile:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(79, 157, 255, 0.6);
+  }
+
+  .fab-mobile:active {
+    transform: scale(0.95);
   }
 }

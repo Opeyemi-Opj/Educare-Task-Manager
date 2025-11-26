@@ -21,47 +21,20 @@
   </header>
 
   <main>
-    <section id="task-input">
-      <form id="task-form">
-        <input type="text"
-          id="task-title"
-          placeholder="Enter task title"
-          required />
-
-        <div class="optional-fields" id="optional-fields">
-          <textarea
-            id="task-description"
-            placeholder="Task description (optional)"></textarea>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="task-priority">Priority</label>
-              <select id="task-priority">
-                <option value="1">Low</option>
-                <option value="2">Medium</option>
-                <option value="3">High</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="task-duedate">Due Date</label>
-              <input type="date" id="task-duedate" />
-            </div>
-          </div>
-        <button type="submit">Add Task</button>
-        </div>
-      </form>
-    </section>
-
     <section id="task-filters" class="filters">
-      <button id="filter-all" class="filter-btn active">
-        All <span class="count">0</span>
-      </button>
-      <button id="filter-active" class="filter-btn">
-        Active <span class="count">0</span>
-      </button>
-      <button id="filter-completed" class="filter-btn">
-        Completed <span class="count">0</span>
+      <div class="filter-buttons">
+        <button id="filter-all" class="filter-btn">
+          All <span class="count">0</span>
+        </button>
+        <button id="filter-active" class="filter-btn active">
+          Active <span class="count">0</span>
+        </button>
+        <button id="filter-completed" class="filter-btn">
+          Completed <span class="count">0</span>
+        </button>
+      </div>
+      <button id="fab-add-task" class="fab" title="Add New Task">
+        <span class="fab-icon">+</span>
       </button>
     </section>
 
@@ -71,9 +44,14 @@
     </section>
   </main>
 
+  <!-- Floating Action Button for mobile -->
+  <button id="fab-add-task-mobile" class="fab-mobile" title="Add New Task">
+    <span class="fab-icon">+</span>
+  </button>
+
   <footer>
-    <p>Educare Task Management Application © 2025 | Built for learning CRUD operations</p>
-    <a href="./presentation.html" class="btn">View Presentation</a>
+    <p>EduTask © 2025 </p>
+    <a href="./presentation.html" class="">View Presentation</a>
   </footer>
 
   <script src="javascript.js"></script>

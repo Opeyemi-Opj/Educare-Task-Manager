@@ -186,6 +186,18 @@
       font-size: 1.1rem;
     }
 
+    .code-snippet {
+      background: #111a2c;
+      border-left: 3px solid var(--accent);
+      padding: 10px 15px;
+      border-radius: 0 8px 8px 0;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      color: #cdd5e0;
+      margin: 10px 0;
+    }
+
     @media (max-width: 768px) {
       .slide {
         padding: 40px;
@@ -238,49 +250,62 @@
       </div>
     </section>
 
-    <!-- Slide 2: What We Built -->
+    <!-- Slide 2: Core Features & UX -->
     <section class="slide">
-      <h2>What We Built</h2>
-      <ul>
-        <li>Full CRUD task management (Add, edit, complete or delete tasks)</li>
-        <li>Task Filtering (All, Active, Completed)</li>
-        <li>Priority Levels (Low, Medium, High)</li>
-        <li>Due Dates & Task Descriptions</li>
-        <!-- <li>Smart Form Fields (appear on typing)</li> -->
-        <li>Persistent storage with localStorage</li>
-        <li>Beautiful dark UI + smooth animations</li>
-        <li>Error handling and input validation</li>
-        <li>100% vanilla HTML/CSS/JS</li>
-        <li>Works offline</li>
-      </ul>
+        <h2>Core Features & UX</h2>
+        <ul>
+            <li><strong>Full CRUD Functionality:</strong> Add, edit, complete, and delete tasks seamlessly.</li>
+            <li><strong>Task Organization:</strong> Assign priority levels, due dates, and detailed descriptions.</li>
+            <li><strong>Live Filtering:</strong> Instantly filter by All, Active, or Completed tasks with updating counters.</li>
+            <li><strong>Data Persistence:</strong> Tasks are saved to `localStorage`, making them available across browser sessions.</li>
+            <li><strong>Polished User Experience:</strong> Smooth animations, toast notifications for feedback, and delete confirmation modals.</li>
+        </ul>
     </section>
 
-    <!-- Slide 3: Key Features -->
+    <!-- Slide 3: Live Demo -->
     <section class="slide">
-      <h2>Key Features</h2>
-      <ul>
-        <li><strong>Priority System:</strong> 3 levels (High, Medium, Low) with color coding</li>
-        <li><strong>Due Dates:</strong> Optional date picker with formatted display</li>
-        <li><strong>Descriptions:</strong> Add details to tasks for context</li>
-        <!-- <li><strong>Smart Form:</strong> Optional fields appear when you start typing</li> -->
-        <li><strong>Live Counters:</strong> See task counts in filter tabs</li>
-        <li><strong>Toast Notifications:</strong> Instant feedback for actions</li>
-        <li><strong>Delete Confirmation:</strong> Modal to prevent accidental deletes</li>
-        <li><strong>Keyboard Shortcuts:</strong> Ctrl+K to focus input</li>
-        <li><strong>Responsive Design:</strong> Works on mobile & desktop</li>
-      </ul>
+      <h2 style="text-align:center;margin-bottom:20px;">Live Demo</h2>
+      <p style="text-align:center;font-size:1.5rem;margin-bottom:30px;">This is the <strong>real app</strong> — interact with it!</p>
+      <button onclick="window.open('index.html', '_blank')"
+        style="padding:15px 30px;font-size:1.2rem;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 15px rgba(79,157,255,0.4);transition:0.3s;margin-bottom:20px;">
+        Open Educare Task Manager
+      </button>
+      <p style="text-align:center;font-size:1.3rem;">
+        Add • Edit • Complete • Delete tasks with Priority & Due Dates
+      </p>
     </section>
 
-    <!-- Slide 4: Simple ≠ Easy -->
+    <!-- Slide 4: Code Architecture -->
+    <section class="slide">
+        <h2>Code Architecture</h2>
+        <ul>
+            <li><strong>Single Source of Truth:</strong> App state is managed in a `tasks` array. The UI is re-rendered from this array after any change.</li>
+            <li><strong>Efficient Event Handling:</strong> Using <strong>Event Delegation</strong>, a single listener on the main list manages all task actions, boosting performance.</li>
+            <li><strong>Direct DOM Manipulation:</strong> Pure vanilla JS is used to dynamically render and update the task list from the state array.</li>
+            <li><strong>Local Storage Persistence:</strong> The `tasks` array is serialized to JSON and saved to `localStorage` on every change.</li>
+            <li><strong>Modular Functions:</strong> Code is organized into clear functions for adding, updating, rendering, and handling tasks.</li>
+        </ul>
+    </section>
+
+    <!-- Slide 5: Security: A Proactive Approach -->
+    <section class="slide">
+        <h2>Security: A Proactive Approach</h2>
+        <ul>
+            <li><strong>Threat Identified:</strong> Cross-Site Scripting (XSS) from user-provided task titles or descriptions.</li>
+            <li><strong>Vulnerability:</strong> Injecting user content directly via `.innerHTML` without sanitization.</li>
+            <li><strong>Attack Vector:</strong> A payload like <code class="code-snippet" style="font-size: 1rem; padding: 2px 8px; display: inline-block;">&lt;img src=x onerror=alert('hacked')&gt;</code> could execute arbitrary JavaScript.</li>
+            <li><strong>The Fix:</strong> Implemented a robust `escapeHtml()` function to neutralize HTML tags, ensuring user input is always treated as plain text before rendering.</li>
+        </ul>
+    </section>
+
+    <!-- Slide 6: Simple ≠ Easy -->
     <section class="slide">
       <h2>Simple ≠ Easy</h2>
-      <p>We executed a classic project with <strong>production-level quality</strong>.</p>
-      <br>
+      <p>We executed a classic project with <strong>production-level quality</strong> by focusing on the details.</p>
       <p>Mastered:</p>
       <ul>
         <li>DOM manipulation & event delegation</li>
         <li>State management using localStorage</li>
-        <li>Dynamic form visibility & transitions</li>
         <li>Responsive + accessible design</li>
         <li>UX polish (toasts, modals, animations)</li>
         <li>Code organization & modularity</li>
@@ -288,72 +313,24 @@
       </ul>
     </section>
 
-    <!-- Slide 5: Live Demo -->
-    <section class="slide">
-      <h2 style="text-align:center;margin-bottom:20px;">Live Demo</h2>
-      <p style="text-align:center;font-size:1.5rem;margin-bottom:30px;">This is the <strong>real app</strong> — interact with it!</p>
-
-      <button onclick="window.open('index.html', '_blank')"
-        style="padding:15px 30px;font-size:1.2rem;border:none;border-radius:8px;cursor:pointer;background:var(--accent);color:#fff;box-shadow:0 5px 15px rgba(79,157,255,0.4);transition:0.3s;margin-bottom:20px;">
-        Open Educare Task Manager
-      </button>
-
-      <p style="text-align:center;font-size:1.3rem;">
-        Add • Edit • Complete • Delete tasks with Priority & Due Dates
-      </p>
-    </section>
-
-    <!-- Slide 6: How It Works -->
-    <section class="slide">
-      <h2>How It Works</h2>
-      <ul>
-        <li><strong>Add Task:</strong> Type title</li>
-        <li><strong>Priority:</strong> Select from Low (1), Medium (2), High (3)</li>
-        <li><strong>Due Date:</strong> Pick a date or leave empty</li>
-        <li><strong>Description:</strong> Add task details for more context</li>
-        <li><strong>Complete:</strong> Click ✓ to mark done (can undo with ↶)</li>
-        <li><strong>Delete:</strong> Click 🗑 with confirmation modal</li>
-        <li><strong>Filter:</strong> View All, Active, or Completed tasks</li>
-        <li><strong>Persist:</strong> All data saves automatically</li>
-      </ul>
-    </section>
-
-    <!-- Slide 7: Code Architecture -->
-    <section class="slide">
-      <h2>Code Architecture</h2>
-      <ul>
-        <li>Data layer (tasks array)</li>
-        <li>localStorage persistence</li>
-        <li>Filtering & sorting engine</li>
-        <li>Rendering system</li>
-        <li>Event delegation</li>
-        <li>Form validation & handling</li>
-        <li>Modular functions</li>
-        <li>Clean state management</li>
-      </ul>
-    </section>
-
-    <!-- Slide 8: What We Learned -->
+    <!-- Slide 7: What We Learned -->
     <section class="slide">
       <h2>What We Learned</h2>
       <ul>
-        <li>Real browser internals & DOM APIs</li>
-        <li>UX details matter (animations, feedback, transitions)</li>
-        <li>Teamwork & code reviews</li>
-        <li>Vanilla JS is powerful & flexible</li>
-        <li>localStorage for client-side persistence</li>
-        <li>Form state management</li>
-        <li>Error handling best practices</li>
+        <li>The power and flexibility of vanilla JS</li>
+        <li>Why UX details like animations and feedback matter</li>
+        <li>The importance of state management for UI consistency</li>
+        <li>How to identify and fix common security vulnerabilities</li>
+        <li>Effective teamwork & code reviews</li>
       </ul>
     </section>
 
-    <!-- Slide 9: Future Ideas -->
+    <!-- Slide 8: Future Enhancements -->
     <section class="slide">
       <h2>Future Enhancements</h2>
       <ul>
         <li>Categories/Tags for organizing tasks</li>
         <li>Search functionality</li>
-        <li>Recurring tasks</li>
         <li>Drag & drop reordering</li>
         <li>Cloud sync (Database)</li>
         <li>Export to PDF/CSV</li>
@@ -361,7 +338,7 @@
       </ul>
     </section>
 
-    <!-- Slide 10: Thank You -->
+    <!-- Slide 9: Thank You -->
     <section class="slide">
       <h1>Thank You!</h1>
       <p style="font-size:2.5rem;margin:30px 0;">Questions?</p>
@@ -392,7 +369,7 @@
     </svg>
   </button>
 
-  <div class="counter"><span id="current">1</span> / 10</div>
+  <div class="counter"><span id="current">1</span> / 9</div>
 
   <script>
     const slides = document.querySelectorAll('.slide');
